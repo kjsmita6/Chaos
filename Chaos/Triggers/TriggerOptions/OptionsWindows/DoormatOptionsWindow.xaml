@@ -1,0 +1,19 @@
+﻿<ContentDialog
+    x:Class="Chaos.Triggers.TriggerOptions.OptionsWindows.DoormatOptionsWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Chaos.Triggers.TriggerOptions.OptionsWindows"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Title="DoormatTrigger Options"
+    PrimaryButtonText="Done"
+    PrimaryButtonClick="ContentDialog_PrimaryButtonClick">
+
+    <Grid Margin="0,0,0,-14">
+        <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="Name" VerticalAlignment="Top" FontSize="15"/>
+        <TextBox x:Name="nameBox" HorizontalAlignment="Left" Margin="0,20,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" FontSize="15" Width="119" Height="34"/>
+        <TextBox x:Name="messageBox" HorizontalAlignment="Left" Margin="124,20,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Height="34" Width="205"/>
+        <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="Message (&quot;{0}&quot; in place of name)" VerticalAlignment="Top" Margin="124,0,0,0"/>
+    </Grid>
+</ContentDialog>

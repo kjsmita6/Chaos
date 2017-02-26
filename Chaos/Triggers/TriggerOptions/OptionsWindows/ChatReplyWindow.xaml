@@ -1,0 +1,21 @@
+﻿<Page
+    x:Class="Chaos.Triggers.TriggerOptions.OptionsWindows.ChatReplyWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Chaos.Triggers.TriggerOptions.OptionsWindows"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d" Height="506.712" Width="551.507">
+
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <TextBlock x:Name="textBlock" HorizontalAlignment="Left" Margin="64,38,0,0" TextWrapping="Wrap" Text="Name" VerticalAlignment="Top" FontSize="20"/>
+        <TextBox x:Name="nameBox" HorizontalAlignment="Left" Margin="64,84,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" FontSize="20" Height="41" Width="210"/>
+        <TextBlock x:Name="textBlock1" HorizontalAlignment="Left" Margin="64,161,0,0" TextWrapping="Wrap" Text="Matches" VerticalAlignment="Top" FontSize="20"/>
+        <TextBox x:Name="matchesBox" HorizontalAlignment="Left" Margin="64,206,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" FontSize="20" Width="405"/>
+        <Button x:Name="doneButton" Content="Done" HorizontalAlignment="Left" Margin="225,428,0,0" VerticalAlignment="Top" FontSize="20" Width="104" Click="doneButton_Click"/>
+        <TextBlock x:Name="textBlock2" HorizontalAlignment="Left" Margin="64,287,0,0" TextWrapping="Wrap" Text="Responses" VerticalAlignment="Top" FontSize="20"/>
+        <TextBox x:Name="responsesBox" HorizontalAlignment="Left" Margin="64,334,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" FontSize="20" Width="405"/>
+        <ToolTip Content="Separate with commas, no spaces between items" HorizontalAlignment="Left" Margin="64,206,0,0" VerticalAlignment="Top" Height="39" Width="405" FontSize="14"/>
+        <ToolTip Content="Separate with commas, no spaces between items" HorizontalAlignment="Left" Margin="64,334,0,0" VerticalAlignment="Top" Height="39" Width="405"/>
+    </Grid>
+</Page>

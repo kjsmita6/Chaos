@@ -5,9 +5,38 @@
     xmlns:local="using:Chaos"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d">
+    mc:Ignorable="d" Height="602" Width="1016" Loaded="Page_Loaded">
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-
+        <Pivot x:Name="pivot">
+            <PivotItem Header="Login Information" Margin="12,0,12,70">
+                <Grid HorizontalAlignment="Left" Height="487" Margin="10,10,0,0" VerticalAlignment="Top" Width="972">
+                    <TextBox x:Name="usernameBox" HorizontalAlignment="Left" Margin="36,94,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" FontSize="20" Height="50" Width="216"/>
+                    <TextBox x:Name="tokenBox" HorizontalAlignment="Left" Margin="36,237,0,0" VerticalAlignment="Top" Height="50" Width="216" FontSize="20"/>
+                    <TextBlock x:Name="textBlock" HorizontalAlignment="Left" Margin="36,45,0,0" TextWrapping="Wrap" Text="Bot Nickname" VerticalAlignment="Top" FontSize="20"/>
+                    <TextBlock x:Name="textBlock1" HorizontalAlignment="Left" Margin="36,188,0,0" TextWrapping="Wrap" Text="Discord Token" VerticalAlignment="Top" FontSize="20"/>
+                    <ListBox x:Name="chatbotsList" HorizontalAlignment="Left" Height="223" Margin="417,94,0,0" VerticalAlignment="Top" Width="349"/>
+                    <TextBlock x:Name="textBlock2" HorizontalAlignment="Left" Margin="417,45,0,0" TextWrapping="Wrap" Text="Currently Saved Bots" VerticalAlignment="Top" FontSize="20"/>
+                </Grid>
+            </PivotItem>
+            <PivotItem Header="Triggers">
+                <Grid>
+                    <ListBox x:Name="triggersListBox" HorizontalAlignment="Left" Height="469" Margin="10,10,0,0" VerticalAlignment="Top" Width="439">
+                        <ListBoxItem x:Name="chatReplyTrigger" Content="ChatReplyTrigger - Sends a reply to a certain message" FontSize="20"/>
+                        <ListBoxItem x:Name="doormatTrigger" Content="DoormatTrigger - Greets a user with a message when they join" FontSize="20"/>
+                        <ListBoxItem x:Name="kickTrigger" Content="KickTrigger - Kicks a user from chat" FontSize="20"/>
+                    </ListBox>
+                    <ListBox x:Name="addedTriggersListBox" HorizontalAlignment="Left" Height="469" Margin="559,10,0,0" VerticalAlignment="Top" Width="404"/>
+                    <Button x:Name="addButton" Content="&gt;&gt;" HorizontalAlignment="Left" Margin="454,190,0,0" VerticalAlignment="Top" Width="100" FontSize="20" Click="addButton_Click"/>
+                    <Button x:Name="removeButton" Content="&lt;&lt;" HorizontalAlignment="Left" Margin="454,259,0,0" VerticalAlignment="Top" Height="39" Width="100" FontSize="20"/>
+                </Grid>
+            </PivotItem>
+            <PivotItem Header="Logger">
+                <Grid>
+                    <ListBox x:Name="outputBox" HorizontalAlignment="Left" Height="470" Margin="10,10,0,0" VerticalAlignment="Top" Width="972"/>
+                </Grid>
+            </PivotItem>
+        </Pivot>
+        <Button x:Name="startButton" Content="Start" HorizontalAlignment="Left" Margin="462,553,0,0" VerticalAlignment="Top" Width="107" FontSize="20" Click="startButton_Click"/>
     </Grid>
 </Page>
