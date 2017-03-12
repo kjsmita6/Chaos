@@ -33,8 +33,15 @@ namespace Chaos.Triggers.TriggerOptions.OptionsWindows
             {
                 MessageDialog dialog = new MessageDialog("You must include a name and a command.", "Error");
                 await dialog.ShowAsync();
+                return;
             }
-            else
+            else if (!messageBox.Text.Contains("#"))
+            {
+                MessageDialog dialog = new MessageDialog("You must include # where the user's name will be in the message.", "Error");
+                await dialog.ShowAsync();
+                return;
+            }
+            else if (messageBox.Text != "" && nameBox.Text != "" && messageBox.Text.Contains("#"))
             {
                 DO = new DoormatOptions()
                 {
@@ -42,6 +49,11 @@ namespace Chaos.Triggers.TriggerOptions.OptionsWindows
                     Message = messageBox.Text
                 };
             }
+        }
+
+        private void ContentDialog_SecondaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
+        {
+            return;
         }
     }
 }

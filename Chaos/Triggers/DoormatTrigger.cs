@@ -20,7 +20,7 @@ namespace Chaos.Triggers
 
         private async Task<bool> Respond(ulong toID, ulong userID)
         {
-            string message = string.Format(Options.DoormatOptions.Message, Bot.client.GetChannel(toID).GetUser(userID).Username);
+            string message = Options.DoormatOptions.Message.Replace("#", Bot.client.GetChannel(toID).GetUser(userID).Username);
             await SendMessageAfterDelay(toID, message);
             return true;
         }

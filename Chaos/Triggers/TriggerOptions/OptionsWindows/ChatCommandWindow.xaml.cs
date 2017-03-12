@@ -46,6 +46,7 @@ namespace Chaos.Triggers.TriggerOptions.OptionsWindows
 
         private void ContentDialog_SecondaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {
+            return;
         }
     }
 }

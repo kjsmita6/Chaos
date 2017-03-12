@@ -105,10 +105,13 @@
     <Compile Include="Triggers\BaseTrigger.cs" />
     <Compile Include="Triggers\ChatReplyTrigger.cs" />
     <Compile Include="Triggers\DoormatTrigger.cs" />
+    <Compile Include="Triggers\IsUpTrigger.cs" />
     <Compile Include="Triggers\KickTrigger.cs" />
+    <Compile Include="Triggers\PlayGameTrigger.cs" />
     <Compile Include="Triggers\TriggerOptions\ChatCommand.cs" />
     <Compile Include="Triggers\TriggerOptions\ChatReply.cs" />
     <Compile Include="Triggers\TriggerOptions\DoormatOptions.cs" />
+    <Compile Include="Triggers\TriggerOptions\MainOptions.cs" />
     <Compile Include="Triggers\TriggerOptions\OptionsWindows\ChatCommandWindow.xaml.cs">
       <DependentUpon>ChatCommandWindow.xaml</DependentUpon>
     </Compile>
@@ -117,6 +120,9 @@
     </Compile>
     <Compile Include="Triggers\TriggerOptions\OptionsWindows\DoormatOptionsWindow.xaml.cs">
       <DependentUpon>DoormatOptionsWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Triggers\TriggerOptions\OptionsWindows\MainOptionsWindow.xaml.cs">
+      <DependentUpon>MainOptionsWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Triggers\TriggerOptions\TriggerOptionsBase.cs" />
     <Compile Include="Triggers\TriggerType.cs" />
@@ -156,6 +162,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Triggers\TriggerOptions\OptionsWindows\DoormatOptionsWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Triggers\TriggerOptions\OptionsWindows\MainOptionsWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

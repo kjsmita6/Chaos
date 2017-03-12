@@ -8,12 +8,14 @@
     mc:Ignorable="d"
     Title="DoormatTrigger Options"
     PrimaryButtonText="Done"
-    PrimaryButtonClick="ContentDialog_PrimaryButtonClick">
+    SecondaryButtonText="Cancel"
+    PrimaryButtonClick="ContentDialog_PrimaryButtonClick"
+    SecondaryButtonClick="ContentDialog_SecondaryButtonClick">
 
     <Grid Margin="0,0,0,-14">
         <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="Name" VerticalAlignment="Top" FontSize="15"/>
         <TextBox x:Name="nameBox" HorizontalAlignment="Left" Margin="0,20,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" FontSize="15" Width="119" Height="34"/>
         <TextBox x:Name="messageBox" HorizontalAlignment="Left" Margin="124,20,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Height="34" Width="205"/>
-        <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="Message (&quot;{0}&quot; in place of name)" VerticalAlignment="Top" Margin="124,0,0,0"/>
+        <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="Message (# in place of name)" VerticalAlignment="Top" Margin="124,0,0,0"/>
     </Grid>
 </ContentDialog>

@@ -20,18 +20,20 @@ namespace Chaos
     class Bot
     {
         public static DiscordSocketClient client { get; set; }
-        private static string token;
+        private static string token { get; set; }
         public static List<BaseTrigger> triggers = new List<BaseTrigger>();
         public static string username { get; set; }
         public static StorageFolder folder = ApplicationData.Current.LocalFolder;
         public static StorageFolder userDir;
         public static StorageFolder triggerDir;
+        public static string game { get; set; }
 
-        public static async Task StartAsync(string u, string t)
+        public static async Task StartAsync(string u, string t, string g = null)
         {
             client = new DiscordSocketClient();
             token = t;
             username = u;
+            game = g;
             
             triggerDir = await userDir.CreateFolderAsync("triggers", CreationCollisionOption.OpenIfExists);
 
@@ -52,19 +54,25 @@ namespace Chaos
         {
             client.MessageReceived += async (message) =>
             {
-                Log.Instance.Info("Message from {0} in {1}: {2}", message.Author.Username, message.Channel.Name, message.Content);
-                foreach (BaseTrigger trigger in triggers)
+                if (message.Author.Id != client.CurrentUser.Id)
                 {
-                    await trigger.OnChatMessage(message.Channel.Id, message.Author.Id, message.Content, true);
+                    Log.Instance.Info("Message from {0} in {1}: {2}", message.Author.Username, message.Channel.Name, message.Content);
+                    foreach (BaseTrigger trigger in triggers)
+                    {
+                        await trigger.OnChatMessage(message.Channel.Id, message.Author.Id, message.Content, true);
+                    }
                 }
             };
 
             client.UserJoined += async (user) =>
             {
-                Log.Instance.Info("User {0} joined channel {1}", user.Username, user.Guild.Name);
-                foreach (BaseTrigger trigger in triggers)
+                if (user.Id != client.CurrentUser.Id)
                 {
-                    await trigger.OnEnteredChat(user.Guild.Id, user.Id, true);
+                    Log.Instance.Info("User {0} joined channel {1}", user.Username, user.Guild.Name);
+                    foreach (BaseTrigger trigger in triggers)
+                    {
+                        await trigger.OnEnteredChat(user.Guild.Id, user.Id, true);
+                    }
                 }
             };
 
@@ -74,6 +82,10 @@ namespace Chaos
 
             await client.LoginAsync(TokenType.Bot, token);
             await client.ConnectAsync();
+            if(game != null)
+            {
+                await client.SetGameAsync(game);
+            }
             await Task.Delay(-1);
         }
 
@@ -89,7 +101,8 @@ namespace Chaos
             UserInfo info = new UserInfo
             {
                 Username = username,
-                Token = token
+                Token = token,
+                Game = game
             };
 
             string json = JsonConvert.SerializeObject(info, Formatting.Indented);
@@ -108,6 +121,7 @@ namespace Chaos
 
         public static async Task SaveTriggers()
         {
+            /*
             IReadOnlyList<StorageFile> files = await triggerDir.GetFilesAsync();
             if (files.Count > 0)
             {
@@ -138,20 +152,26 @@ namespace Chaos
             }
             else
             {
-                if (triggers.Count > 0)
+            */
+            if (triggers.Count > 0)
+            {
+                Log.Instance.Verbose("Saving triggers...");
+                int count = triggers.Count;
+                IReadOnlyList<StorageFile> files = await triggerDir.GetFilesAsync();
+                foreach (StorageFile f in files)
                 {
-                    Log.Instance.Verbose("Saving triggers...");
-                    int count = triggers.Count;
-                    foreach (BaseTrigger trigger in triggers)
-                    {
-                        Log.Instance.Debug("Saving triggers, " + count + " left");
-                        await trigger.SaveTrigger();
-                        Log.Instance.Silly("Trigger {0}/{1} saved", trigger.Name, trigger.Type.ToString());
-                        count--;
-                    }
-                    Log.Instance.Verbose("Successfully read trigger data from triggers window");
+                    await f.DeleteAsync();
                 }
+                foreach (BaseTrigger trigger in triggers)
+                {
+                    Log.Instance.Debug("Saving triggers, " + count + " left");
+                    await trigger.SaveTrigger();
+                    Log.Instance.Silly("Trigger {0}/{1} saved", trigger.Name, trigger.Type.ToString());
+                    count--;
+                }
+                Log.Instance.Verbose("Successfully added triggers");
             }
+            //}
 
             foreach(BaseTrigger trigger in triggers)
             {

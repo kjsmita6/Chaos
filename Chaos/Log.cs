@@ -187,7 +187,6 @@ namespace Chaos
         // formatting.
         protected async void _OutputLineToConsole(LogLevel level, string line)
         {
-
             await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
                 ListBoxItem item = new ListBoxItem();

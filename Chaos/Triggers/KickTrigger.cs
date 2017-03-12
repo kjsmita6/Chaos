@@ -25,7 +25,7 @@ namespace Chaos.Triggers
             string[] query = StripCommand(message, Options.ChatCommand.Command);
             if(query != null && query.Length == 1)
             {
-                await SendMessageAfterDelay(toID, "Usage: !kick <@user> - kicks a user from chat");
+                await SendMessageAfterDelay(toID, "Usage: " + Options.ChatCommand.Command + " <@user> - kicks a user from chat");
                 return true;
             }
             else if(query != null && query.Length == 2)

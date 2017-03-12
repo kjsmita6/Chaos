@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Discord.WebSocket;
 using System.Threading;
 using Windows.Storage;
+using Windows.UI.Popups;
 
 namespace Chaos.Triggers
 {
@@ -17,7 +18,6 @@ namespace Chaos.Triggers
         public TriggerType Type { get; set; }
         public string Name { get; set; }
         public TriggerOptionsBase Options { get; set; }
-
         public bool ReplyEnabled = true;
 
         public BaseTrigger(TriggerType type, string name, TriggerOptionsBase options)
@@ -30,13 +30,11 @@ namespace Chaos.Triggers
         /// <summary>
         /// If there is an error, log it easily
         /// </summary>
-        /// <param name="cbn"></param>
-        /// <param name="name"></param>
         /// <param name="error"></param>
         /// <returns>error string</returns>
-        protected string IfError(string cbn, string name, Exception error)
+        protected string IfError(Exception error)
         {
-            return string.Format("{0}/{1}: {2}: {3}", cbn, name, error.Message, error.StackTrace);
+            return string.Format("{0}/{1}: {2}: {3}", Bot.username, Name, error.Message, error.StackTrace);
         }
 
         #region trigger read-write
@@ -48,25 +46,13 @@ namespace Chaos.Triggers
         {
             if (Options != null)
             {
-                TriggerOptionsBase options = new TriggerOptionsBase
-                {
-                    Name = Options.Name,
-                    Type = Options.Type,
-                    ChatCommand = Options.ChatCommand
-                };
-                string json = JsonConvert.SerializeObject(options, Formatting.Indented);
-                StorageFile file = await Bot.triggerDir.CreateFileAsync(Name + ".json", CreationCollisionOption.OpenIfExists);
-                await FileIO.WriteTextAsync(file, json);
-            }
-            else if (Options == null)
-            {
-                TriggerOptionsBase options = new TriggerOptionsBase();
-                string json = JsonConvert.SerializeObject(options, Formatting.Indented);
+                string json = JsonConvert.SerializeObject(Options, Formatting.Indented);
                 StorageFile file = await Bot.triggerDir.CreateFileAsync(Name + ".json", CreationCollisionOption.OpenIfExists);
                 await FileIO.WriteTextAsync(file, json);
             }
         }
 
+        /*
         /// <summary>
         /// Read triggers from username/triggers/
         /// </summary>
@@ -76,18 +62,16 @@ namespace Chaos.Triggers
             List<BaseTrigger> temp = new List<BaseTrigger>();
             IReadOnlyList<StorageFile> files = await Bot.triggerDir.GetFilesAsync();
             foreach (StorageFile file in files)
-            {
-                /*
-                int start = file.IndexOf("triggers/") + "triggers/".Length;
-                int end = file.IndexOf(".", start);
-                string _file = file.Substring(start, end - start);
-                */
-
-                string contents = await FileIO.ReadTextAsync(file);
+            {string contents = await FileIO.ReadTextAsync(file);
                 TriggerOptionsBase options = JsonConvert.DeserializeObject<TriggerOptionsBase>(contents);
                 TriggerType type = options.Type;
                 string name = options.Name;
 
+                BaseTrigger trigger = (BaseTrigger)Activator.CreateInstance(System.Type.GetType("Chaos.Triggers." + type.ToString()), type, name, options);
+                temp.Add(trigger);
+
+                
+                VVVVVV Comment this out later VVVVVV
                 switch (type)
                 {
                     case TriggerType.KickTrigger:
@@ -96,12 +80,24 @@ namespace Chaos.Triggers
                     case TriggerType.DoormatTrigger:
                         temp.Add(new DoormatTrigger(type, name, options));
                         break;
+                    case TriggerType.ChatReplyTrigger:
+                        temp.Add(new ChatReplyTrigger(type, name, options));
+                        break;
+                    case TriggerType.IsUpTrigger:
+                        temp.Add(new IsUpTrigger(type, name, options));
+                        break;
+                    case TriggerType.PlayGameTrigger:
+                        temp.Add(new PlayGameTrigger(type, name, options));
+                        break;
                     default:
                         break;
                 }
+                
+
             }
             return temp;
         }
+        */
 
         #endregion
 
@@ -127,7 +123,7 @@ namespace Chaos.Triggers
             }
             catch (Exception e)
             {
-                Log.Instance.Error(IfError(Bot.username, Name, e));
+                Log.Instance.Error(IfError(e));
                 return false;
             }
         }
@@ -142,20 +138,25 @@ namespace Chaos.Triggers
         /// <returns></returns>
         public virtual async Task<bool> OnChatMessage(ulong roomID, ulong chatterID, string message, bool haveSentMessage)
         {
-            try
+            if (ReplyEnabled && CheckUser(chatterID) && !CheckIgnores(chatterID))
             {
-                bool messageSent = await respondToChatMessage(roomID, chatterID, message);
-                if (messageSent)
+                try
                 {
-                    Log.Instance.Silly("{0}/{1}: Sent RespondToChatMessage - {2} - {3} - {4}", Bot.username, Name, chatterID, roomID, message);
+                    bool messageSent = await respondToChatMessage(roomID, chatterID, message);
+                    if (messageSent)
+                    {
+                        Log.Instance.Silly("{0}/{1}: Sent RespondToChatMessage - {2} - {3} - {4}", Bot.username, Name, chatterID, roomID, message);
+                        DisableForTimeout();
+                    }
+                    return messageSent;
                 }
-                return messageSent;
+                catch (Exception e)
+                {
+                    Log.Instance.Error(IfError(e));
+                    return false;
+                }
             }
-            catch (Exception e)
-            {
-                Log.Instance.Error(IfError(Bot.username, Name, e));
-                return false;
-            }
+            return false;
         }
 
         /// <summary>
@@ -167,20 +168,25 @@ namespace Chaos.Triggers
         /// <returns></returns>
         public virtual async Task<bool> OnEnteredChat(ulong roomID, ulong userID, bool haveSentMessage)
         {
-            try
+            if (ReplyEnabled && CheckUser(userID) && !CheckIgnores(userID))
             {
-                bool messageSent = await respondToEnteredMessage(roomID, userID);
-                if (messageSent)
+                try
                 {
-                    Log.Instance.Silly("{0}/{1}: Sent RespondToEnteredMessage - {2} - {3} - {4}", Bot.username, Name, userID, roomID);
+                    bool messageSent = await respondToEnteredMessage(roomID, userID);
+                    if (messageSent)
+                    {
+                        Log.Instance.Silly("{0}/{1}: Sent RespondToEnteredMessage - {2} - {3} - {4}", Bot.username, Name, userID, roomID);
+                        DisableForTimeout();
+                    }
+                    return messageSent;
                 }
-                return messageSent;
+                catch (Exception e)
+                {
+                    Log.Instance.Error(IfError(e));
+                    return false;
+                }
             }
-            catch (Exception e)
-            {
-                Log.Instance.Error(IfError(Bot.username, Name, e));
-                return false;
-            }
+            return false;
         }
 
         /// <summary>
@@ -199,7 +205,7 @@ namespace Chaos.Triggers
             }
             catch (Exception e)
             {
-                Log.Instance.Error(IfError(Bot.username, Name, e));
+                Log.Instance.Error(IfError(e));
                 return false;
             }
         }
@@ -220,7 +226,7 @@ namespace Chaos.Triggers
             }
             catch (Exception e)
             {
-                Log.Instance.Error(IfError(Bot.username, Name, e));
+                Log.Instance.Error(IfError(e));
                 return false;
             }
         }
@@ -239,7 +245,7 @@ namespace Chaos.Triggers
             }
             catch (Exception e)
             {
-                Log.Instance.Error(IfError(Bot.username, Name, e));
+                Log.Instance.Error(IfError(e));
                 return false;
             }
         }
@@ -313,6 +319,80 @@ namespace Chaos.Triggers
             }
             return null;
         }
+
+        /// <summary>
+        /// Check if a user is ignored
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>True if user is ignored, false otherwise</returns>
+        protected bool CheckIgnores(ulong id)
+        {
+            if(Options.MainOptions.Ignores != null && Options.MainOptions.Ignores.Count > 0)
+            {
+                return CheckList(Options.MainOptions.Ignores, id);
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Check if a user is allowed to use this trigger
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>True if allowed, false otherwise</returns>
+        protected bool CheckUser(ulong id)
+        {
+            if(Options.MainOptions.Users != null && Options.MainOptions.Users.Count > 0)
+            {
+                return CheckList(Options.MainOptions.Users, id);
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// Returns if an item is found in a list
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="list"></param>
+        /// <param name="item"></param>
+        /// <returns>True if found, false otherwise</returns>
+        protected bool CheckList(List<ulong> list, ulong item)
+        {
+            foreach(ulong i in list)
+            {
+                if(i == item)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Disables a trigger for a certain duration
+        /// </summary>
+        protected void DisableForTimeout()
+        {
+            try
+            {
+                int to = Options.MainOptions.Timeout;
+                if (to > 0)
+                {
+                    ReplyEnabled = false;
+                    Log.Instance.Silly("{0}/{1}: Setting timeout ({2} ms)", Bot.username, Name, to);
+                    Timer timer = new Timer(delegate
+                    {
+                        Log.Instance.Silly("{0}/{1}: Timeout expired", Bot.username, Name);
+                        ReplyEnabled = true;
+                    }, null, to, Timeout.Infinite);
+                }
+            }
+            catch(Exception e)
+            {
+                throw e;
+            }
+        }
+
+
 
         #endregion
     }

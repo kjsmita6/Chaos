@@ -7,5 +7,6 @@
         public ChatCommand ChatCommand { get; set; }
         public ChatReply ChatReply { get; set; }
         public DoormatOptions DoormatOptions { get; set; }
+        public MainOptions MainOptions { get; set; }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Chaos.Triggers;
 using Chaos.Triggers.TriggerOptions;
 using Chaos.Triggers.TriggerOptions.OptionsWindows;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -36,7 +37,7 @@ namespace Chaos
 
         private async void startButton_Click(object sender, RoutedEventArgs e)
         {
-            if (usernameBox.Text == "" && chatbotsList.SelectedIndex != -1 && chatbotsList.SelectedValue.ToString() != "")
+            if (usernameBox.Text == "" && tokenBox.Text == "" && chatbotsList.SelectedIndex != -1 && chatbotsList.SelectedValue.ToString() != "")
             {
                 string username = chatbotsList.SelectedValue.ToString();
                 Bot.userDir = await Bot.folder.CreateFolderAsync(username, CreationCollisionOption.OpenIfExists);
@@ -46,26 +47,8 @@ namespace Chaos
                     var data = await Bot.ReadData(username);
                     startButton.Visibility = Visibility.Collapsed;
                     pivot.SelectedIndex = 2;
-                    await Bot.StartAsync(username, data.Token);
+                    await Bot.StartAsync(username, data.Token, data.Game);
                     Log.Instance.Silly("Successfully read login data from file.");
-                }
-            }
-            else if (usernameBox.Text != "" && tokenBox.Text == "")
-            {
-                string username = usernameBox.Text;
-                Bot.userDir = await Bot.folder.CreateFolderAsync(username, CreationCollisionOption.OpenIfExists);
-                if (Bot.userDir.GetFileAsync("login.json") != null)
-                {
-                    var data = await Bot.ReadData(username);
-                    startButton.Visibility = Visibility.Collapsed;
-                    pivot.SelectedIndex = 2;
-                    await Bot.StartAsync(username, data.Token);
-                    Log.Instance.Silly("Successfully read login data from file.");
-                }
-                else
-                {
-                    MessageDialog dialog = new MessageDialog("Missing token.", "Error");
-                    await dialog.ShowAsync();
                 }
             }
             else
@@ -85,7 +68,7 @@ namespace Chaos
                     Bot.userDir = await Bot.folder.CreateFolderAsync(usernameBox.Text, CreationCollisionOption.OpenIfExists);
                     startButton.Visibility = Visibility.Collapsed;
                     pivot.SelectedIndex = 2;
-                    await Bot.StartAsync(usernameBox.Text, tokenBox.Text);
+                    await Bot.StartAsync(usernameBox.Text, tokenBox.Text, gameBox.Text);
                 }
             }
         }
@@ -106,58 +89,85 @@ namespace Chaos
 
             TriggerOptionsBase tob = new TriggerOptionsBase();
 
-            if(selected == "kickTrigger" || selected == "banTrigger")
+            switch (selected)
             {
-                ChatCommandWindow window = new ChatCommandWindow();
-                ContentDialogResult result = await window.ShowAsync();
-                if (result == ContentDialogResult.Primary)
-                {
-                    cc = window.CC;
+                case "kickTrigger":
+                case "banTrigger":
+                case "isUpTrigger":
+                case "playGameTrigger":
+                    {
+                        ChatCommandWindow window = new ChatCommandWindow();
+                        ContentDialogResult result = await window.ShowAsync();
+                        if (result == ContentDialogResult.Primary && window.CC != null)
+                        {
+                            MainOptionsWindow mow = new MainOptionsWindow();
+                            ContentDialogResult r1 = await mow.ShowAsync();
+                            if (r1 == ContentDialogResult.Primary && mow.MO != null)
+                            {
+                                cc = window.CC;
 
-                    type = (TriggerType)Enum.Parse(typeof(TriggerType), char.ToUpper(selected[0]) + selected.Substring(1));
-                    addedTriggersListBox.Items.Add(string.Format("{0} - {1}", cc.Name, type.ToString()));
+                                type = (TriggerType)Enum.Parse(typeof(TriggerType), char.ToUpper(selected[0]) + selected.Substring(1));
+                                addedTriggersListBox.Items.Add(string.Format("{0} - {1}", cc.Name, type.ToString()));
 
-                    tob.ChatCommand = cc;
-                    tob.Name = cc.Name;
-                    tob.Type = type;
-                    BaseTrigger trigger = (BaseTrigger)Activator.CreateInstance(Type.GetType("Chaos.Triggers." + type.ToString()), type, cc.Name, tob);
-                    Bot.triggers.Add(trigger);
-                }
-            }
-            else if(selected == "chatReplyTrigger")
-            {
-                ChatReplyWindow crw = new ChatReplyWindow();
-                crw.Visibility = Visibility.Visible;
-                if (crw.DialogResult == 0)
-                {
-                    cr = crw.CR;
-                    type = (TriggerType)Enum.Parse(typeof(TriggerType), char.ToUpper(selected[0]) + selected.Substring(1));
+                                tob.ChatCommand = cc;
+                                tob.Name = cc.Name;
+                                tob.Type = type;
+                                tob.MainOptions = mow.MO;
+                                BaseTrigger trigger = (BaseTrigger)Activator.CreateInstance(Type.GetType("Chaos.Triggers." + type.ToString()), type, cc.Name, tob);
+                                Bot.triggers.Add(trigger);
+                            }
+                        }
+                    }
+                    break;
+                case "chatReplyTrigger":
+                    {
+                        ChatReplyWindow window = new ChatReplyWindow();
+                        ContentDialogResult result = await window.ShowAsync();
+                        if (result == ContentDialogResult.Primary && window.CR != null)
+                        {
+                            MainOptionsWindow mow = new MainOptionsWindow();
+                            ContentDialogResult r1 = await mow.ShowAsync();
+                            if (r1 == ContentDialogResult.Primary && mow.MO != null)
+                            {
+                                cr = window.CR;
+                                type = (TriggerType)Enum.Parse(typeof(TriggerType), char.ToUpper(selected[0]) + selected.Substring(1));
 
-                    tob.ChatReply = cr;
-                    tob.Name = cr.Name;
-                    tob.Type = type;
-                    addedTriggersListBox.Items.Add(string.Format("{0} - {1}", cr.Name, type.ToString()));
-                    BaseTrigger trigger = (BaseTrigger)Activator.CreateInstance(Type.GetType("Chaos.Triggers." + type.ToString()), type, cr.Name, tob);
-                    Bot.triggers.Add(trigger);
-                }
-            }
-            else if(selected == "doormatTrigger")
-            {
-                DoormatOptionsWindow window = new DoormatOptionsWindow();
-                ContentDialogResult result = await window.ShowAsync();
-                if (result == ContentDialogResult.Primary)
-                {
-                    _do = window.DO;
+                                tob.ChatReply = cr;
+                                tob.Name = cr.Name;
+                                tob.Type = type;
+                                tob.MainOptions = mow.MO;
+                                addedTriggersListBox.Items.Add(string.Format("{0} - {1}", cr.Name, type.ToString()));
+                                BaseTrigger trigger = (BaseTrigger)Activator.CreateInstance(Type.GetType("Chaos.Triggers." + type.ToString()), type, cr.Name, tob);
+                                Bot.triggers.Add(trigger);
+                            }
+                        }
+                    }
+                    break;
+                case "doormatTrigger":
+                    {
+                        DoormatOptionsWindow window = new DoormatOptionsWindow();
+                        ContentDialogResult result = await window.ShowAsync();
+                        if (result == ContentDialogResult.Primary && window.DO != null)
+                        {
+                            MainOptionsWindow mow = new MainOptionsWindow();
+                            ContentDialogResult r1 = await mow.ShowAsync();
+                            if (r1 == ContentDialogResult.Primary && mow.MO != null)
+                            {
+                                _do = window.DO;
 
-                    type = (TriggerType)Enum.Parse(typeof(TriggerType), char.ToUpper(selected[0]) + selected.Substring(1));
-                    addedTriggersListBox.Items.Add(string.Format("{0} - {1}", _do.Name, type.ToString()));
+                                type = (TriggerType)Enum.Parse(typeof(TriggerType), char.ToUpper(selected[0]) + selected.Substring(1));
+                                addedTriggersListBox.Items.Add(string.Format("{0} - {1}", _do.Name, type.ToString()));
 
-                    tob.DoormatOptions = _do;
-                    tob.Name = _do.Name;
-                    tob.Type = type;
-                    BaseTrigger trigger = (BaseTrigger)Activator.CreateInstance(Type.GetType("Chaos.Triggers." + type.ToString()), type, _do.Name, tob);
-                    Bot.triggers.Add(trigger);
-                }
+                                tob.DoormatOptions = _do;
+                                tob.Name = _do.Name;
+                                tob.Type = type;
+                                tob.MainOptions = mow.MO;
+                                BaseTrigger trigger = (BaseTrigger)Activator.CreateInstance(Type.GetType("Chaos.Triggers." + type.ToString()), type, _do.Name, tob);
+                                Bot.triggers.Add(trigger);
+                            }
+                        }
+                    }
+                    break;
             }
         }
 
@@ -175,6 +185,39 @@ namespace Chaos
                 }
             }
             catch (FileNotFoundException fnfe) { }
+        }
+
+        private async void removeButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                string selectedString = ((string)addedTriggersListBox.SelectedValue);
+                addedTriggersListBox.Items.Remove(addedTriggersListBox.SelectedValue);
+                IEnumerable<BaseTrigger> triggers = Bot.triggers.Where(x => x.Name == selectedString.Substring(0, selectedString.IndexOf(" -")));
+                for (int i = 0; i < triggers.Count(); i++)
+                {
+                    Bot.triggers.Remove(triggers.ElementAt(i));
+                }
+            }
+            catch (Exception err) { }
+        }
+
+        private async void chatbotsList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (e.AddedItems[0].ToString() != "" && e.AddedItems[0].ToString() != null)
+            {
+                Bot.userDir = await Bot.folder.GetFolderAsync(e.AddedItems[0].ToString());
+                Bot.triggerDir = await Bot.userDir.GetFolderAsync("triggers");
+                IReadOnlyList<StorageFile> files = await Bot.triggerDir.GetFilesAsync();
+                foreach (StorageFile file in files)
+                {
+                    string text = await FileIO.ReadTextAsync(file);
+                    TriggerOptionsBase options = JsonConvert.DeserializeObject<TriggerOptionsBase>(text);
+                    addedTriggersListBox.Items.Add(options.Name + " - " + options.Type.ToString());
+                    BaseTrigger trigger = (BaseTrigger)Activator.CreateInstance(Type.GetType("Chaos.Triggers." + options.Type.ToString()), options.Type, options.Name, options);
+                    Bot.triggers.Add(trigger);
+                }
+            }
         }
     }
 }

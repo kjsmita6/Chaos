@@ -15,8 +15,10 @@
                     <TextBox x:Name="tokenBox" HorizontalAlignment="Left" Margin="36,237,0,0" VerticalAlignment="Top" Height="50" Width="216" FontSize="20"/>
                     <TextBlock x:Name="textBlock" HorizontalAlignment="Left" Margin="36,45,0,0" TextWrapping="Wrap" Text="Bot Nickname" VerticalAlignment="Top" FontSize="20"/>
                     <TextBlock x:Name="textBlock1" HorizontalAlignment="Left" Margin="36,188,0,0" TextWrapping="Wrap" Text="Discord Token" VerticalAlignment="Top" FontSize="20"/>
-                    <ListBox x:Name="chatbotsList" HorizontalAlignment="Left" Height="223" Margin="417,94,0,0" VerticalAlignment="Top" Width="349"/>
+                    <ListBox x:Name="chatbotsList" HorizontalAlignment="Left" Height="223" Margin="417,94,0,0" VerticalAlignment="Top" Width="349" SelectionChanged="chatbotsList_SelectionChanged"/>
                     <TextBlock x:Name="textBlock2" HorizontalAlignment="Left" Margin="417,45,0,0" TextWrapping="Wrap" Text="Currently Saved Bots" VerticalAlignment="Top" FontSize="20"/>
+                    <TextBlock HorizontalAlignment="Left" Margin="36,340,0,0" TextWrapping="Wrap" Text="Bot Game" VerticalAlignment="Top" FontSize="20"/>
+                    <TextBox x:Name="gameBox" HorizontalAlignment="Left" Margin="36,392,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" FontSize="20" Width="216" Height="50"/>
                 </Grid>
             </PivotItem>
             <PivotItem Header="Triggers">
@@ -24,11 +26,13 @@
                     <ListBox x:Name="triggersListBox" HorizontalAlignment="Left" Height="469" Margin="10,10,0,0" VerticalAlignment="Top" Width="439">
                         <ListBoxItem x:Name="chatReplyTrigger" Content="ChatReplyTrigger - Sends a reply to a certain message" FontSize="20"/>
                         <ListBoxItem x:Name="doormatTrigger" Content="DoormatTrigger - Greets a user with a message when they join" FontSize="20"/>
+                        <ListBoxItem x:Name="isUpTrigger" Content="IsUpTrigger - Gets the online status of a website" FontSize="20"/>
                         <ListBoxItem x:Name="kickTrigger" Content="KickTrigger - Kicks a user from chat" FontSize="20"/>
+                        <ListBoxItem x:Name="playGameTrigger" Content="PlayGameTrigger - Changes the bot's game" FontSize="20"/>
                     </ListBox>
                     <ListBox x:Name="addedTriggersListBox" HorizontalAlignment="Left" Height="469" Margin="559,10,0,0" VerticalAlignment="Top" Width="404"/>
                     <Button x:Name="addButton" Content="&gt;&gt;" HorizontalAlignment="Left" Margin="454,190,0,0" VerticalAlignment="Top" Width="100" FontSize="20" Click="addButton_Click"/>
-                    <Button x:Name="removeButton" Content="&lt;&lt;" HorizontalAlignment="Left" Margin="454,259,0,0" VerticalAlignment="Top" Height="39" Width="100" FontSize="20"/>
+                    <Button x:Name="removeButton" Content="&lt;&lt;" HorizontalAlignment="Left" Margin="454,259,0,0" VerticalAlignment="Top" Height="39" Width="100" FontSize="20" Click="removeButton_Click"/>
                 </Grid>
             </PivotItem>
             <PivotItem Header="Logger">

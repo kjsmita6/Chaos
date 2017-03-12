@@ -4,6 +4,8 @@
     {
         KickTrigger,
         ChatReplyTrigger,
-        DoormatTrigger
+        DoormatTrigger,
+        IsUpTrigger,
+        PlayGameTrigger
     }
 }

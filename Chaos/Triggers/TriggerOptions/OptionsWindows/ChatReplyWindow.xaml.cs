@@ -14,42 +14,40 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
-// The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
+// The Content Dialog item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
 namespace Chaos.Triggers.TriggerOptions.OptionsWindows
 {
-    /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
-    /// </summary>
-    public sealed partial class ChatReplyWindow : Page
+    public sealed partial class ChatReplyWindow : ContentDialog
     {
         public ChatReply CR { get; set; }
-        public int DialogResult { get; set; }
 
         public ChatReplyWindow()
         {
             this.InitializeComponent();
         }
 
-        private async void doneButton_Click(object sender, RoutedEventArgs e)
+        private async void ContentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {
-            if (matchesBox.Text == "" || responsesBox.Text == "" || nameBox.Text == "")
+            if (nameBox.Text == "" || matchesBox.Text == "" || responsesBox.Text == "")
             {
-                MessageDialog dialog = new MessageDialog("You must include matches, responses, and a name.", "Error");
+                MessageDialog dialog = new MessageDialog("You must include a name, matches, and responses. Matches and responses must be separated with commas.", "Error");
                 await dialog.ShowAsync();
             }
             else
             {
-                CR = new ChatReply
+                CR = new ChatReply()
                 {
                     Name = nameBox.Text,
                     Matches = matchesBox.Text.Split(',').ToList(),
-                    Responses = responsesBox.Text.Split(',').ToList(),
+                    Responses = responsesBox.Text.Split(',').ToList()
                 };
-
-                DialogResult = 1;
-                Visibility = Visibility.Collapsed;
             }
+        }
+
+        private void ContentDialog_SecondaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
+        {
+            return;
         }
     }
 }
