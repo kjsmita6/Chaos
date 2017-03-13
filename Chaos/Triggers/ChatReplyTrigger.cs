@@ -12,7 +12,7 @@ namespace Chaos.Triggers
         public ChatReplyTrigger(TriggerType type, string name, TriggerOptionsBase options) : base(type, name, options)
         { }
 
-        public override async Task<bool> respondToChatMessage(ulong roomID, ulong chatterId, string message)
+        public override async Task<bool> RespondToChatMessage(ulong roomID, ulong chatterId, string message)
         {
             bool result = await Respond(roomID, chatterId, message);
             return result;

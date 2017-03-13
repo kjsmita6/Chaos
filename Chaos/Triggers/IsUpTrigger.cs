@@ -15,7 +15,7 @@ namespace Chaos.Triggers
         public IsUpTrigger(TriggerType type, string name, TriggerOptionsBase options) : base(type, name, options)
         { }
 
-        public override async Task<bool> respondToChatMessage(ulong roomID, ulong chatterId, string message)
+        public override async Task<bool> RespondToChatMessage(ulong roomID, ulong chatterId, string message)
         {
             bool result = await Respond(roomID, chatterId, message);
             return result;
@@ -31,12 +31,15 @@ namespace Chaos.Triggers
             }
             else if (query != null && query.Length == 2)
             {
-                SocketGuildChannel channel = Bot.client.GetChannel(toID) as SocketGuildChannel;
+                SocketGuildChannel channel = Bot.Client.GetChannel(toID) as SocketGuildChannel;
                 HttpWebResponse response;
+                System.Diagnostics.Stopwatch timer = new System.Diagnostics.Stopwatch();
                 try
                 {
+                    timer.Start();
                     HttpWebRequest request = (HttpWebRequest)WebRequest.Create(query[1]);
                     response = (HttpWebResponse)(await request.GetResponseAsync());
+                    timer.Stop();
                 }
                 catch(UriFormatException ufe)
                 {
@@ -50,7 +53,7 @@ namespace Chaos.Triggers
                     Log.Instance.Error(IfError(we));
                     response = (HttpWebResponse)we.Response;
                 }
-                await SendMessageAfterDelay(toID, response.StatusDescription.ToString() + " (" + (int)response.StatusCode + ")");
+                await SendMessageAfterDelay(toID, response.StatusDescription.ToString() + " (" + (int)response.StatusCode + ")\nTime: " + timer.ElapsedMilliseconds + " ms");
                 return true;
             }
             return false;

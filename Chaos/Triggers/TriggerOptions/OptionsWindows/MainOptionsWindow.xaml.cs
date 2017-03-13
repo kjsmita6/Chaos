@@ -21,9 +21,24 @@ namespace Chaos.Triggers.TriggerOptions.OptionsWindows
     {
         public MainOptions MO { get; set; }
 
-        public MainOptionsWindow()
+        public MainOptionsWindow(MainOptions options = null)
         {
             this.InitializeComponent();
+            if(options != null)
+            {
+                AddOptions(options);
+            }
+
+        }
+
+        public void AddOptions(MainOptions options)
+        {
+            if(MO == null)
+            {
+                toBox.Text = options.Timeout.ToString();
+                usersBox.Text = string.Join(",", options.Users);
+                ignoreBox.Text = string.Join(",", options.Ignores);
+            }
         }
 
         private void ContentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)

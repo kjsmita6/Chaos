@@ -22,9 +22,23 @@ namespace Chaos.Triggers.TriggerOptions.OptionsWindows
     {
         public DoormatOptions DO { get; set; }
 
-        public DoormatOptionsWindow()
+        public DoormatOptionsWindow(DoormatOptions options = null)
         {
             this.InitializeComponent();
+            if(options != null)
+            {
+                AddOptions(options);
+            }
+        }
+
+        public void AddOptions(DoormatOptions options)
+        {
+            if (DO == null)
+            {
+                DO = options;
+                nameBox.Text = DO.Name;
+                messageBox.Text = DO.Message;
+            }
         }
 
         private async void ContentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)

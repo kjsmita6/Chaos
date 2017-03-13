@@ -22,9 +22,23 @@ namespace Chaos.Triggers.TriggerOptions.OptionsWindows
     {
         public ChatCommand CC { get; set; }
 
-        public ChatCommandWindow()
+        public ChatCommandWindow(ChatCommand options = null)
         {
             this.InitializeComponent();
+            if(options != null)
+            {
+                AddOptions(options);
+            }
+        }
+
+        public void AddOptions(ChatCommand options)
+        {
+            if (CC == null)
+            {
+                CC = options;
+                nameBox.Text = CC.Name;
+                commandBox.Text = CC.Command;
+            }
         }
 
         private async void ContentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)

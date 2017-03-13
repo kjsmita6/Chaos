@@ -14,7 +14,7 @@ namespace Chaos.Triggers
         public KickTrigger(TriggerType type, string name, TriggerOptionsBase options) : base(type, name, options)
         { }
 
-        public override async Task<bool> respondToChatMessage(ulong roomID, ulong chatterId, string message)
+        public override async Task<bool> RespondToChatMessage(ulong roomID, ulong chatterId, string message)
         {
             bool result = await Respond(roomID, chatterId, message);
             return result;
@@ -30,7 +30,7 @@ namespace Chaos.Triggers
             }
             else if(query != null && query.Length == 2)
             {
-                SocketGuildChannel channel = Bot.client.GetChannel(toID) as SocketGuildChannel;
+                SocketGuildChannel channel = Bot.Client.GetChannel(toID) as SocketGuildChannel;
 
                 int from = query[1].IndexOf("<@") + "<@".Length;
                 int to = query[1].LastIndexOf(">");

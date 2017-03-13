@@ -138,7 +138,7 @@ namespace Chaos
 
         // Outputs a line to both the log and the console, if
         // applicable.
-        protected void _OutputLine(LogLevel level, string line, params object[] formatParams)
+        protected async void _OutputLine(LogLevel level, string line, params object[] formatParams)
         {
             if (disposed)
                 return;
@@ -151,8 +151,14 @@ namespace Chaos
 
             if (level >= FileLogLevel)
             {
-                //_FileStream.WriteLine(formattedString);
-                //Write(formattedString);
+                try
+                {
+                    await FileIO.AppendTextAsync(logFile, formattedString + '\n', Windows.Storage.Streams.UnicodeEncoding.Utf8);
+                }
+                catch (Exception e)
+                {
+                    Error(e.Message + ": " + e.StackTrace);
+                }
             }
             if (level >= OutputLevel)
             {

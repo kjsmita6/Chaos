@@ -14,7 +14,7 @@ namespace Chaos.Triggers
         public PlayGameTrigger(TriggerType type, string name, TriggerOptionsBase options) : base(type, name, options)
         { }
 
-        public override async Task<bool> respondToChatMessage(ulong roomID, ulong chatterId, string message)
+        public override async Task<bool> RespondToChatMessage(ulong roomID, ulong chatterId, string message)
         {
             bool result = await Respond(roomID, chatterId, message);
             return result;
@@ -30,10 +30,10 @@ namespace Chaos.Triggers
             }
             else if (query != null && query.Length > 1)
             {
-                SocketGuildChannel channel = Bot.client.GetChannel(toID) as SocketGuildChannel;
+                SocketGuildChannel channel = Bot.Client.GetChannel(toID) as SocketGuildChannel;
                 if(query[1] == "clear")
                 {
-                    await Bot.client.SetGameAsync("");
+                    await Bot.Client.SetGameAsync("");
                     return true;
                 }
                 string game = "";
@@ -41,9 +41,9 @@ namespace Chaos.Triggers
                 {
                     game += query[i];
                 }
-                Bot.game = game;
+                Bot.Game = game;
                 await Bot.WriteData();
-                await Bot.client.SetGameAsync(Bot.game);
+                await Bot.Client.SetGameAsync(Bot.Game);
                 return true;
             }
             return false;

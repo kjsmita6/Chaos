@@ -19,25 +19,25 @@ namespace Chaos
 {
     class Bot
     {
-        public static DiscordSocketClient client { get; set; }
-        private static string token { get; set; }
+        public static DiscordSocketClient Client { get; set; }
+        private static string Token { get; set; }
         public static List<BaseTrigger> triggers = new List<BaseTrigger>();
-        public static string username { get; set; }
+        public static string Username { get; set; }
         public static StorageFolder folder = ApplicationData.Current.LocalFolder;
         public static StorageFolder userDir;
         public static StorageFolder triggerDir;
-        public static string game { get; set; }
+        public static string Game { get; set; }
 
         public static async Task StartAsync(string u, string t, string g = null)
         {
-            client = new DiscordSocketClient();
-            token = t;
-            username = u;
-            game = g;
+            Client = new DiscordSocketClient();
+            Token = t;
+            Username = u;
+            Game = g;
             
             triggerDir = await userDir.CreateFolderAsync("triggers", CreationCollisionOption.OpenIfExists);
 
-            Log.CreateInstance(username + "_log.txt", username, Log.LogLevel.Silly, Log.LogLevel.Silly);
+            Log.CreateInstance(Username + "_log.txt", Username, Log.LogLevel.Silly, Log.LogLevel.Silly);
 
             try
             {
@@ -52,9 +52,9 @@ namespace Chaos
 
         private static async Task StartBot()
         {
-            client.MessageReceived += async (message) =>
+            Client.MessageReceived += async (message) =>
             {
-                if (message.Author.Id != client.CurrentUser.Id)
+                if (message.Author.Id != Client.CurrentUser.Id)
                 {
                     Log.Instance.Info("Message from {0} in {1}: {2}", message.Author.Username, message.Channel.Name, message.Content);
                     foreach (BaseTrigger trigger in triggers)
@@ -64,9 +64,9 @@ namespace Chaos
                 }
             };
 
-            client.UserJoined += async (user) =>
+            Client.UserJoined += async (user) =>
             {
-                if (user.Id != client.CurrentUser.Id)
+                if (user.Id != Client.CurrentUser.Id)
                 {
                     Log.Instance.Info("User {0} joined channel {1}", user.Username, user.Guild.Name);
                     foreach (BaseTrigger trigger in triggers)
@@ -80,11 +80,11 @@ namespace Chaos
             await SaveTriggers();
             Log.Instance.Verbose("Starting bot...");
 
-            await client.LoginAsync(TokenType.Bot, token);
-            await client.ConnectAsync();
-            if(game != null)
+            await Client.LoginAsync(TokenType.Bot, Token);
+            await Client.ConnectAsync();
+            if(Game != null)
             {
-                await client.SetGameAsync(game);
+                await Client.SetGameAsync(Game);
             }
             await Task.Delay(-1);
         }
@@ -100,9 +100,9 @@ namespace Chaos
         {
             UserInfo info = new UserInfo
             {
-                Username = username,
-                Token = token,
-                Game = game
+                Username = Username,
+                Token = Token,
+                Game = Game
             };
 
             string json = JsonConvert.SerializeObject(info, Formatting.Indented);
@@ -113,9 +113,9 @@ namespace Chaos
 
             string chatbotsTxt = await FileIO.ReadTextAsync(chatbots);
 
-            if (!chatbotsTxt.Contains(username))
+            if (!chatbotsTxt.Contains(Username))
             {
-                await FileIO.AppendTextAsync(chatbots, username + '\n');
+                await FileIO.AppendTextAsync(chatbots, Username + '\n');
             }
         }
 

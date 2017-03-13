@@ -204,6 +204,7 @@ namespace Chaos
 
         private async void chatbotsList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            addedTriggersListBox.Items.Clear();
             if (e.AddedItems[0].ToString() != "" && e.AddedItems[0].ToString() != null)
             {
                 Bot.userDir = await Bot.folder.GetFolderAsync(e.AddedItems[0].ToString());
@@ -219,5 +220,127 @@ namespace Chaos
                 }
             }
         }
+
+        private async void editButton_Click(object sender, RoutedEventArgs e)
+        {
+            if(addedTriggersListBox.SelectedIndex == -1)
+            {
+                MessageDialog dialog = new MessageDialog("You must select a trigger to edit from the box to the right.", "Error");
+                await dialog.ShowAsync();
+            }
+            else
+            {
+                BaseTrigger trigger = Bot.triggers[addedTriggersListBox.SelectedIndex];
+                switch(trigger.Type)
+                {
+                    case TriggerType.ChatReplyTrigger:
+                        {
+                            ChatReplyWindow crw = new ChatReplyWindow(trigger.Options.ChatReply);
+                            ContentDialogResult result = await crw.ShowAsync();
+                            if (result == ContentDialogResult.Primary)
+                            {
+                                MainOptionsWindow mow = new MainOptionsWindow(trigger.Options.MainOptions);
+                                ContentDialogResult result1 = await mow.ShowAsync();
+                                if (result1 == ContentDialogResult.Primary)
+                                {
+                                    TriggerOptionsBase options = new TriggerOptionsBase()
+                                    {
+                                        Name = crw.CR.Name,
+                                        Type = TriggerType.ChatReplyTrigger,
+                                        ChatReply = crw.CR,
+                                        MainOptions = mow.MO
+                                    };
+                                    addedTriggersListBox.Items[addedTriggersListBox.SelectedIndex] = options.Name + " - " + options.Type.ToString();
+                                    StorageFile oldFile = await Bot.triggerDir.GetFileAsync(trigger.Name + ".json");
+                                    await oldFile.DeleteAsync();
+                                    BaseTrigger newTrigger = (BaseTrigger)Activator.CreateInstance(Type.GetType("Chaos.Triggers." + options.Type.ToString()), options.Type, options.Name, options);
+                                    await newTrigger.SaveTrigger();
+                                    Bot.triggers.Remove(trigger);
+                                    trigger = null;
+                                    Bot.triggers.Add(newTrigger);
+                                }
+                            }
+                        }
+                        break;
+                    case TriggerType.DoormatTrigger:
+                        {
+                            DoormatOptionsWindow dow = new DoormatOptionsWindow(trigger.Options.DoormatOptions);
+                            ContentDialogResult result = await dow.ShowAsync();
+                            if (result == ContentDialogResult.Primary)
+                            {
+                                MainOptionsWindow mow = new MainOptionsWindow(trigger.Options.MainOptions);
+                                ContentDialogResult result1 = await mow.ShowAsync();
+                                if (result1 == ContentDialogResult.Primary)
+                                {
+                                    TriggerOptionsBase options = new TriggerOptionsBase()
+                                    {
+                                        Name = dow.DO.Name,
+                                        Type = TriggerType.DoormatTrigger,
+                                        DoormatOptions = dow.DO,
+                                        MainOptions = mow.MO
+                                    };
+                                    addedTriggersListBox.Items[addedTriggersListBox.SelectedIndex] = options.Name + " - " + options.Type.ToString();
+                                    StorageFile oldFile = await Bot.triggerDir.GetFileAsync(trigger.Name + ".json");
+                                    await oldFile.DeleteAsync();
+                                    BaseTrigger newTrigger = (BaseTrigger)Activator.CreateInstance(Type.GetType("Chaos.Triggers." + options.Type.ToString()), options.Type, options.Name, options);
+                                    await newTrigger.SaveTrigger();
+                                    Bot.triggers.Remove(trigger);
+                                    trigger = null;
+                                    Bot.triggers.Add(newTrigger);
+                                }
+                            }
+                        }
+                        break;
+                    case TriggerType.IsUpTrigger:
+                    case TriggerType.KickTrigger:
+                    case TriggerType.PlayGameTrigger:
+                        {
+                            ChatCommandWindow ccw = new ChatCommandWindow(trigger.Options.ChatCommand);
+                            ContentDialogResult result = await ccw.ShowAsync();
+                            if (result == ContentDialogResult.Primary)
+                            {
+                                MainOptionsWindow mow = new MainOptionsWindow(trigger.Options.MainOptions);
+                                ContentDialogResult result1 = await mow.ShowAsync();
+                                if (result1 == ContentDialogResult.Primary)
+                                {
+                                    TriggerOptionsBase options = new TriggerOptionsBase()
+                                    {
+                                        Name = ccw.CC.Name,
+                                        Type = trigger.Type,
+                                        ChatCommand = ccw.CC,
+                                        MainOptions = mow.MO
+                                    };
+                                    addedTriggersListBox.Items[addedTriggersListBox.SelectedIndex] = options.Name + " - " + options.Type.ToString();
+                                    StorageFile oldFile = await Bot.triggerDir.GetFileAsync(trigger.Name + ".json");
+                                    await oldFile.DeleteAsync();
+                                    BaseTrigger newTrigger = (BaseTrigger)Activator.CreateInstance(Type.GetType("Chaos.Triggers." + options.Type.ToString()), options.Type, options.Name, options);
+                                    await newTrigger.SaveTrigger();
+                                    Bot.triggers.Remove(trigger);
+                                    trigger = null;
+                                    Bot.triggers.Add(newTrigger);
+                                }
+                            }
+                        }
+                        break;
+                }
+            }
+        }
+
+        /* // For deleting bots
+        private async void deleteButton_Click(object sender, RoutedEventArgs e)
+        {
+            ContentDialog dialog = new ContentDialog();
+            dialog.PrimaryButtonText = "Yes";
+            dialog.SecondaryButtonText = "No";
+            dialog.Content = "Are you sure you want to delete this bot? This action cannot be undone.";
+            ContentDialogResult result = await dialog.ShowAsync();
+            if(result == ContentDialogResult.Primary)
+            {
+                StorageFolder folder = await Bot.folder.GetFolderAsync(chatbotsList.SelectedValue.ToString());
+                await folder.DeleteAsync();
+                chatbotsList.Items.Remove();
+            }
+        }
+        */
     }
 }

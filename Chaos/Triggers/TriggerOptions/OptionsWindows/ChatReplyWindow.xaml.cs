@@ -22,9 +22,23 @@ namespace Chaos.Triggers.TriggerOptions.OptionsWindows
     {
         public ChatReply CR { get; set; }
 
-        public ChatReplyWindow()
+        public ChatReplyWindow(ChatReply options = null)
         {
             this.InitializeComponent();
+            if (options != null)
+            {
+                AddOptions(options);
+            }
+        }
+
+        public void AddOptions(ChatReply options)
+        {
+            if (CR == null)
+            {
+                nameBox.Text = options.Name;
+                matchesBox.Text = string.Join(",", options.Matches);
+                responsesBox.Text = string.Join(",", options.Matches);
+            }
         }
 
         private async void ContentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)

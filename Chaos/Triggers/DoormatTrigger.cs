@@ -12,7 +12,7 @@ namespace Chaos.Triggers
         public DoormatTrigger(TriggerType type, string name, TriggerOptionsBase options) : base(type, name, options)
         { }
 
-        public override async Task<bool> respondToEnteredMessage(ulong roomID, ulong userID)
+        public override async Task<bool> RespondToEnteredMessage(ulong roomID, ulong userID)
         {
             bool result = await Respond(roomID, userID);
             return result;
@@ -20,7 +20,7 @@ namespace Chaos.Triggers
 
         private async Task<bool> Respond(ulong toID, ulong userID)
         {
-            string message = Options.DoormatOptions.Message.Replace("#", Bot.client.GetChannel(toID).GetUser(userID).Username);
+            string message = Options.DoormatOptions.Message.Replace("#", Bot.Client.GetChannel(toID).GetUser(userID).Username);
             await SendMessageAfterDelay(toID, message);
             return true;
         }

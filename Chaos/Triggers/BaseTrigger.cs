@@ -34,7 +34,7 @@ namespace Chaos.Triggers
         /// <returns>error string</returns>
         protected string IfError(Exception error)
         {
-            return string.Format("{0}/{1}: {2}: {3}", Bot.username, Name, error.Message, error.StackTrace);
+            return string.Format("{0}/{1}: {2}: {3}", Bot.Username, Name, error.Message, error.StackTrace);
         }
 
         #region trigger read-write
@@ -113,7 +113,7 @@ namespace Chaos.Triggers
                 bool ret = onLoad();
                 if (!ret)
                 {
-                    Log.Instance.Error("{0}/{1}: Error loading trigger {2}: OnLoad returned {3}", Bot.username, Name, Name, ret);
+                    Log.Instance.Error("{0}/{1}: Error loading trigger {2}: OnLoad returned {3}", Bot.Username, Name, Name, ret);
                     return false;
                 }
                 else
@@ -142,10 +142,10 @@ namespace Chaos.Triggers
             {
                 try
                 {
-                    bool messageSent = await respondToChatMessage(roomID, chatterID, message);
+                    bool messageSent = await RespondToChatMessage(roomID, chatterID, message);
                     if (messageSent)
                     {
-                        Log.Instance.Silly("{0}/{1}: Sent RespondToChatMessage - {2} - {3} - {4}", Bot.username, Name, chatterID, roomID, message);
+                        Log.Instance.Silly("{0}/{1}: Sent RespondToChatMessage - {2} - {3} - {4}", Bot.Username, Name, chatterID, roomID, message);
                         DisableForTimeout();
                     }
                     return messageSent;
@@ -172,10 +172,10 @@ namespace Chaos.Triggers
             {
                 try
                 {
-                    bool messageSent = await respondToEnteredMessage(roomID, userID);
+                    bool messageSent = await RespondToEnteredMessage(roomID, userID);
                     if (messageSent)
                     {
-                        Log.Instance.Silly("{0}/{1}: Sent RespondToEnteredMessage - {2} - {3} - {4}", Bot.username, Name, userID, roomID);
+                        Log.Instance.Silly("{0}/{1}: Sent RespondToEnteredMessage - {2} - {3} - {4}", Bot.Username, Name, userID, roomID);
                         DisableForTimeout();
                     }
                     return messageSent;
@@ -201,7 +201,7 @@ namespace Chaos.Triggers
         {
             try
             {
-                return respondToKick(roomID, kickedID, kickerID);
+                return RespondToKick(roomID, kickedID, kickerID);
             }
             catch (Exception e)
             {
@@ -222,7 +222,7 @@ namespace Chaos.Triggers
         {
             try
             {
-                return respondToBan(roomID, bannedID, bannerID);
+                return RespondToBan(roomID, bannedID, bannerID);
             }
             catch (Exception e)
             {
@@ -241,7 +241,7 @@ namespace Chaos.Triggers
         {
             try
             {
-                return respondToLeftMessage(roomID, userID);
+                return RespondToLeftMessage(roomID, userID);
             }
             catch (Exception e)
             {
@@ -259,31 +259,31 @@ namespace Chaos.Triggers
         }
 
         // Return true if a message was sent
-        public virtual async Task<bool> respondToChatMessage(ulong roomID, ulong chatterId, string message)
+        public virtual async Task<bool> RespondToChatMessage(ulong roomID, ulong chatterId, string message)
         {
             return false;
         }
 
         // Return true if the event was eaten
-        public virtual async Task<bool> respondToEnteredMessage(ulong roomID, ulong userID)
+        public virtual async Task<bool> RespondToEnteredMessage(ulong roomID, ulong userID)
         {
             return false;
         }
 
         // Return true if the event was eaten
-        public virtual bool respondToBan(ulong roomID, ulong bannedId, ulong bannerId)
+        public virtual bool RespondToBan(ulong roomID, ulong bannedId, ulong bannerId)
         {
             return false;
         }
         
         // Return true if the event was eaten
-        public virtual bool respondToLeftMessage(ulong roomID, ulong userID)
+        public virtual bool RespondToLeftMessage(ulong roomID, ulong userID)
         {
             return false;
         }
 
         // Return true if the event was eaten
-        public virtual bool respondToKick(ulong roomID, ulong kickedId, ulong kickerId)
+        public virtual bool RespondToKick(ulong roomID, ulong kickedId, ulong kickerId)
         {
             return false;
         }
@@ -300,8 +300,8 @@ namespace Chaos.Triggers
         /// <param name="room"></param>
         protected async Task SendMessageAfterDelay(ulong toID, string message)
         {
-            Log.Instance.Debug("{0}/{1}: Sending nondelayed message to {2}: {3}", Bot.username, Name, toID, message);
-            var channel = Bot.client.GetChannel(toID) as ISocketMessageChannel;
+            Log.Instance.Debug("{0}/{1}: Sending nondelayed message to {2}: {3}", Bot.Username, Name, toID, message);
+            var channel = Bot.Client.GetChannel(toID) as ISocketMessageChannel;
             await channel?.SendMessageAsync(message);
         }
 
@@ -372,23 +372,16 @@ namespace Chaos.Triggers
         /// </summary>
         protected void DisableForTimeout()
         {
-            try
+            int to = Options.MainOptions.Timeout;
+            if (to > 0)
             {
-                int to = Options.MainOptions.Timeout;
-                if (to > 0)
+                ReplyEnabled = false;
+                Log.Instance.Silly("{0}/{1}: Setting timeout ({2} ms)", Bot.Username, Name, to);
+                Timer timer = new Timer(delegate
                 {
-                    ReplyEnabled = false;
-                    Log.Instance.Silly("{0}/{1}: Setting timeout ({2} ms)", Bot.username, Name, to);
-                    Timer timer = new Timer(delegate
-                    {
-                        Log.Instance.Silly("{0}/{1}: Timeout expired", Bot.username, Name);
-                        ReplyEnabled = true;
-                    }, null, to, Timeout.Infinite);
-                }
-            }
-            catch(Exception e)
-            {
-                throw e;
+                    Log.Instance.Silly("{0}/{1}: Timeout expired", Bot.Username, Name);
+                    ReplyEnabled = true;
+                }, null, to, Timeout.Infinite);
             }
         }
 
