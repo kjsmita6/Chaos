@@ -114,7 +114,7 @@ namespace Chaos
                                 tob.Type = type;
                                 tob.MainOptions = mow.MO;
                                 BaseTrigger trigger = (BaseTrigger)Activator.CreateInstance(Type.GetType("Chaos.Triggers." + type.ToString()), type, cc.Name, tob);
-                                Bot.triggers.Add(trigger);
+                                Bot.Triggers.Add(trigger);
                             }
                         }
                     }
@@ -138,7 +138,7 @@ namespace Chaos
                                 tob.MainOptions = mow.MO;
                                 addedTriggersListBox.Items.Add(string.Format("{0} - {1}", cr.Name, type.ToString()));
                                 BaseTrigger trigger = (BaseTrigger)Activator.CreateInstance(Type.GetType("Chaos.Triggers." + type.ToString()), type, cr.Name, tob);
-                                Bot.triggers.Add(trigger);
+                                Bot.Triggers.Add(trigger);
                             }
                         }
                     }
@@ -163,7 +163,7 @@ namespace Chaos
                                 tob.Type = type;
                                 tob.MainOptions = mow.MO;
                                 BaseTrigger trigger = (BaseTrigger)Activator.CreateInstance(Type.GetType("Chaos.Triggers." + type.ToString()), type, _do.Name, tob);
-                                Bot.triggers.Add(trigger);
+                                Bot.Triggers.Add(trigger);
                             }
                         }
                     }
@@ -193,10 +193,10 @@ namespace Chaos
             {
                 string selectedString = ((string)addedTriggersListBox.SelectedValue);
                 addedTriggersListBox.Items.Remove(addedTriggersListBox.SelectedValue);
-                IEnumerable<BaseTrigger> triggers = Bot.triggers.Where(x => x.Name == selectedString.Substring(0, selectedString.IndexOf(" -")));
+                IEnumerable<BaseTrigger> triggers = Bot.Triggers.Where(x => x.Name == selectedString.Substring(0, selectedString.IndexOf(" -")));
                 for (int i = 0; i < triggers.Count(); i++)
                 {
-                    Bot.triggers.Remove(triggers.ElementAt(i));
+                    Bot.Triggers.Remove(triggers.ElementAt(i));
                 }
             }
             catch (Exception err) { }
@@ -216,7 +216,7 @@ namespace Chaos
                     TriggerOptionsBase options = JsonConvert.DeserializeObject<TriggerOptionsBase>(text);
                     addedTriggersListBox.Items.Add(options.Name + " - " + options.Type.ToString());
                     BaseTrigger trigger = (BaseTrigger)Activator.CreateInstance(Type.GetType("Chaos.Triggers." + options.Type.ToString()), options.Type, options.Name, options);
-                    Bot.triggers.Add(trigger);
+                    Bot.Triggers.Add(trigger);
                 }
             }
         }
@@ -230,7 +230,7 @@ namespace Chaos
             }
             else
             {
-                BaseTrigger trigger = Bot.triggers[addedTriggersListBox.SelectedIndex];
+                BaseTrigger trigger = Bot.Triggers[addedTriggersListBox.SelectedIndex];
                 switch(trigger.Type)
                 {
                     case TriggerType.ChatReplyTrigger:
@@ -255,9 +255,9 @@ namespace Chaos
                                     await oldFile.DeleteAsync();
                                     BaseTrigger newTrigger = (BaseTrigger)Activator.CreateInstance(Type.GetType("Chaos.Triggers." + options.Type.ToString()), options.Type, options.Name, options);
                                     await newTrigger.SaveTrigger();
-                                    Bot.triggers.Remove(trigger);
+                                    Bot.Triggers.Remove(trigger);
                                     trigger = null;
-                                    Bot.triggers.Add(newTrigger);
+                                    Bot.Triggers.Add(newTrigger);
                                 }
                             }
                         }
@@ -284,9 +284,9 @@ namespace Chaos
                                     await oldFile.DeleteAsync();
                                     BaseTrigger newTrigger = (BaseTrigger)Activator.CreateInstance(Type.GetType("Chaos.Triggers." + options.Type.ToString()), options.Type, options.Name, options);
                                     await newTrigger.SaveTrigger();
-                                    Bot.triggers.Remove(trigger);
+                                    Bot.Triggers.Remove(trigger);
                                     trigger = null;
-                                    Bot.triggers.Add(newTrigger);
+                                    Bot.Triggers.Add(newTrigger);
                                 }
                             }
                         }
@@ -315,9 +315,9 @@ namespace Chaos
                                     await oldFile.DeleteAsync();
                                     BaseTrigger newTrigger = (BaseTrigger)Activator.CreateInstance(Type.GetType("Chaos.Triggers." + options.Type.ToString()), options.Type, options.Name, options);
                                     await newTrigger.SaveTrigger();
-                                    Bot.triggers.Remove(trigger);
+                                    Bot.Triggers.Remove(trigger);
                                     trigger = null;
-                                    Bot.triggers.Add(newTrigger);
+                                    Bot.Triggers.Add(newTrigger);
                                 }
                             }
                         }

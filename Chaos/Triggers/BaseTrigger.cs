@@ -52,53 +52,6 @@ namespace Chaos.Triggers
             }
         }
 
-        /*
-        /// <summary>
-        /// Read triggers from username/triggers/
-        /// </summary>
-        /// <returns>A list of BaseTrigger objects</returns>
-        public static async Task<List<BaseTrigger>> ReadTriggers()
-        {
-            List<BaseTrigger> temp = new List<BaseTrigger>();
-            IReadOnlyList<StorageFile> files = await Bot.triggerDir.GetFilesAsync();
-            foreach (StorageFile file in files)
-            {string contents = await FileIO.ReadTextAsync(file);
-                TriggerOptionsBase options = JsonConvert.DeserializeObject<TriggerOptionsBase>(contents);
-                TriggerType type = options.Type;
-                string name = options.Name;
-
-                BaseTrigger trigger = (BaseTrigger)Activator.CreateInstance(System.Type.GetType("Chaos.Triggers." + type.ToString()), type, name, options);
-                temp.Add(trigger);
-
-                
-                VVVVVV Comment this out later VVVVVV
-                switch (type)
-                {
-                    case TriggerType.KickTrigger:
-                        temp.Add(new KickTrigger(type, name, options));
-                        break;
-                    case TriggerType.DoormatTrigger:
-                        temp.Add(new DoormatTrigger(type, name, options));
-                        break;
-                    case TriggerType.ChatReplyTrigger:
-                        temp.Add(new ChatReplyTrigger(type, name, options));
-                        break;
-                    case TriggerType.IsUpTrigger:
-                        temp.Add(new IsUpTrigger(type, name, options));
-                        break;
-                    case TriggerType.PlayGameTrigger:
-                        temp.Add(new PlayGameTrigger(type, name, options));
-                        break;
-                    default:
-                        break;
-                }
-                
-
-            }
-            return temp;
-        }
-        */
-
         #endregion
 
         #region overriden methods
@@ -253,6 +206,7 @@ namespace Chaos.Triggers
 
         #region subclass methods
 
+        // Return true if trigger was loaded properly
         public virtual bool onLoad()
         {
             return true;
@@ -264,25 +218,25 @@ namespace Chaos.Triggers
             return false;
         }
 
-        // Return true if the event was eaten
+        // Return true if a message was sent
         public virtual async Task<bool> RespondToEnteredMessage(ulong roomID, ulong userID)
         {
             return false;
         }
 
-        // Return true if the event was eaten
+        // Return true if a message was sent
         public virtual bool RespondToBan(ulong roomID, ulong bannedId, ulong bannerId)
         {
             return false;
         }
         
-        // Return true if the event was eaten
+        // Return true if a message was sent
         public virtual bool RespondToLeftMessage(ulong roomID, ulong userID)
         {
             return false;
         }
 
-        // Return true if the event was eaten
+        // Return true if a message was sent
         public virtual bool RespondToKick(ulong roomID, ulong kickedId, ulong kickerId)
         {
             return false;

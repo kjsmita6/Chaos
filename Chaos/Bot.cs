@@ -1,27 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-
-using Windows.Storage;
-
+﻿using Chaos.Triggers;
 using Discord;
 using Discord.WebSocket;
-using Chaos.Triggers;
-using Windows.System.Threading;
-using System.IO;
 using Newtonsoft.Json;
-using Windows.UI.Popups;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Windows.Storage;
 
 namespace Chaos
 {
     class Bot
     {
         public static DiscordSocketClient Client { get; set; }
-        private static string Token { get; set; }
-        public static List<BaseTrigger> triggers = new List<BaseTrigger>();
+        private static string Token;
+        public static List<BaseTrigger> Triggers { get; set; }
         public static string Username { get; set; }
         public static StorageFolder folder = ApplicationData.Current.LocalFolder;
         public static StorageFolder userDir;
@@ -57,7 +49,7 @@ namespace Chaos
                 if (message.Author.Id != Client.CurrentUser.Id)
                 {
                     Log.Instance.Info("Message from {0} in {1}: {2}", message.Author.Username, message.Channel.Name, message.Content);
-                    foreach (BaseTrigger trigger in triggers)
+                    foreach (BaseTrigger trigger in Triggers)
                     {
                         await trigger.OnChatMessage(message.Channel.Id, message.Author.Id, message.Content, true);
                     }
@@ -69,7 +61,7 @@ namespace Chaos
                 if (user.Id != Client.CurrentUser.Id)
                 {
                     Log.Instance.Info("User {0} joined channel {1}", user.Username, user.Guild.Name);
-                    foreach (BaseTrigger trigger in triggers)
+                    foreach (BaseTrigger trigger in Triggers)
                     {
                         await trigger.OnEnteredChat(user.Guild.Id, user.Id, true);
                     }
@@ -121,48 +113,17 @@ namespace Chaos
 
         public static async Task SaveTriggers()
         {
-            /*
-            IReadOnlyList<StorageFile> files = await triggerDir.GetFilesAsync();
-            if (files.Count > 0)
-            {
-                if (triggers.Count > 0)
-                {
-                    List<BaseTrigger> oldTriggers = await BaseTrigger.ReadTriggers();
-                    List<BaseTrigger> newTriggers = triggers;
-
-                    Log.Instance.Verbose("Saving triggers...");
-                    int count = triggers.Count;
-                    foreach (BaseTrigger trigger in newTriggers)
-                    {
-                        Log.Instance.Debug("Saving triggers, " + count + " left");
-                        await trigger.SaveTrigger();
-                        Log.Instance.Silly("Trigger {0}/{1} saved", trigger.Name, trigger.Type.ToString());
-                        count--;
-                    }
-                    Log.Instance.Verbose("Successfully read trigger data from " + username + "/triggers/ and from triggers tab");
-
-                    triggers = oldTriggers.Concat(newTriggers).ToList();
-                }
-                else
-                {
-                    Log.Instance.Verbose("Loading triggers...");
-                    triggers = await BaseTrigger.ReadTriggers();
-                    Log.Instance.Verbose("Successfully read trigger data from " + username + "/triggers/");
-                }
-            }
-            else
-            {
-            */
-            if (triggers.Count > 0)
+            Triggers = new List<BaseTrigger>();
+            if (Triggers.Count > 0)
             {
                 Log.Instance.Verbose("Saving triggers...");
-                int count = triggers.Count;
+                int count = Triggers.Count;
                 IReadOnlyList<StorageFile> files = await triggerDir.GetFilesAsync();
                 foreach (StorageFile f in files)
                 {
                     await f.DeleteAsync();
                 }
-                foreach (BaseTrigger trigger in triggers)
+                foreach (BaseTrigger trigger in Triggers)
                 {
                     Log.Instance.Debug("Saving triggers, " + count + " left");
                     await trigger.SaveTrigger();
@@ -173,7 +134,7 @@ namespace Chaos
             }
             //}
 
-            foreach(BaseTrigger trigger in triggers)
+            foreach(BaseTrigger trigger in Triggers)
             {
                 trigger.OnLoad();
             }
