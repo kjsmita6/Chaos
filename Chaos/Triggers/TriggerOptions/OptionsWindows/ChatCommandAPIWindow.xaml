@@ -1,0 +1,23 @@
+﻿<ContentDialog
+    x:Class="Chaos.Triggers.TriggerOptions.OptionsWindows.ChatCommandAPIWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Chaos.Triggers.TriggerOptions.OptionsWindows"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Title="Chat Command Options with API"
+    PrimaryButtonText="Done"
+    SecondaryButtonText="Cancel"
+    PrimaryButtonClick="ContentDialog_PrimaryButtonClick"
+    SecondaryButtonClick="ContentDialog_SecondaryButtonClick">
+
+    <Grid Margin="0,0,-149.667,0">
+        <TextBox x:Name="nameBox" HorizontalAlignment="Left" Margin="0,31,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="125"/>
+        <TextBox x:Name="commandBox" HorizontalAlignment="Left" Margin="130,31,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="130"/>
+        <TextBox x:Name="apiBox" HorizontalAlignment="Left" Margin="265,31,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="130"/>
+        <TextBlock x:Name="textBlock" HorizontalAlignment="Left" Margin="0,6,0,0" TextWrapping="Wrap" Text="Name" VerticalAlignment="Top"/>
+        <TextBlock x:Name="textBlock1" HorizontalAlignment="Left" Margin="130,6,0,0" TextWrapping="Wrap" Text="Command" VerticalAlignment="Top"/>
+        <TextBlock x:Name="textBlock2" HorizontalAlignment="Left" Margin="265,6,0,0" TextWrapping="Wrap" Text="API Key" VerticalAlignment="Top"/>
+    </Grid>
+</ContentDialog>

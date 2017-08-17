@@ -33,6 +33,7 @@ namespace Chaos
         {
             this.InitializeComponent();
             Log.dispatcher = Dispatcher;
+            Bot.Triggers = new List<BaseTrigger>();
         }
 
         private async void startButton_Click(object sender, RoutedEventArgs e)
@@ -81,9 +82,10 @@ namespace Chaos
             {
                 selected = ((ListBoxItem)triggersListBox.SelectedValue).Name;
             }
-            catch (Exception err) { return; }
+            catch (Exception) { return; }
 
             ChatCommand cc = new ChatCommand();
+            ChatCommandAPI cca = new ChatCommandAPI();
             ChatReply cr = new ChatReply();
             DoormatOptions _do = new DoormatOptions();
 
@@ -95,6 +97,7 @@ namespace Chaos
                 case "banTrigger":
                 case "isUpTrigger":
                 case "playGameTrigger":
+                case "chooseTrigger":
                     {
                         ChatCommandWindow window = new ChatCommandWindow();
                         ContentDialogResult result = await window.ShowAsync();
@@ -168,6 +171,31 @@ namespace Chaos
                         }
                     }
                     break;
+                case "cSGOStatTrigger":
+                    {
+                        ChatCommandAPIWindow window = new ChatCommandAPIWindow();
+                        ContentDialogResult result = await window.ShowAsync();
+                        if(result == ContentDialogResult.Primary && window.CCAPI != null)
+                        {
+                            MainOptionsWindow mow = new MainOptionsWindow();
+                            ContentDialogResult r1 = await mow.ShowAsync();
+                            if (r1 == ContentDialogResult.Primary && mow.MO != null)
+                            {
+                                cca = window.CCAPI;
+
+                                type = (TriggerType)Enum.Parse(typeof(TriggerType), char.ToUpper(selected[0]) + selected.Substring(1));
+                                addedTriggersListBox.Items.Add(string.Format("{0} - {1}", cca.Name, type.ToString()));
+
+                                tob.ChatCommandAPI = cca;
+                                tob.Name = cca.Name;
+                                tob.Type = type;
+                                tob.MainOptions = mow.MO;
+                                BaseTrigger trigger = (BaseTrigger)Activator.CreateInstance(Type.GetType("Chaos.Triggers." + type.ToString()), type, _do.Name, tob);
+                                Bot.Triggers.Add(trigger);
+                            }
+                        }
+                    }
+                    break;
             }
         }
 
@@ -184,7 +212,7 @@ namespace Chaos
                     chatbotsList.ItemsSource = chatbots.Split('\n');
                 }
             }
-            catch (FileNotFoundException fnfe) { }
+            catch (FileNotFoundException) { }
         }
 
         private async void removeButton_Click(object sender, RoutedEventArgs e)
@@ -199,7 +227,7 @@ namespace Chaos
                     Bot.Triggers.Remove(triggers.ElementAt(i));
                 }
             }
-            catch (Exception err) { }
+            catch (Exception) { }
         }
 
         private async void chatbotsList_SelectionChanged(object sender, SelectionChangedEventArgs e)

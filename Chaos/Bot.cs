@@ -73,8 +73,8 @@ namespace Chaos
             Log.Instance.Verbose("Starting bot...");
 
             await Client.LoginAsync(TokenType.Bot, Token);
-            await Client.ConnectAsync();
-            if(Game != null)
+            await Client.StartAsync();
+            if(Game != null && Game != "")
             {
                 await Client.SetGameAsync(Game);
             }
@@ -113,7 +113,6 @@ namespace Chaos
 
         public static async Task SaveTriggers()
         {
-            Triggers = new List<BaseTrigger>();
             if (Triggers.Count > 0)
             {
                 Log.Instance.Verbose("Saving triggers...");

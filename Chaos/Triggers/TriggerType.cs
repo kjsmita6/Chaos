@@ -6,6 +6,8 @@
         ChatReplyTrigger,
         DoormatTrigger,
         IsUpTrigger,
-        PlayGameTrigger
+        PlayGameTrigger,
+        ChooseTrigger,
+        CSGOStatTrigger
     }
 }

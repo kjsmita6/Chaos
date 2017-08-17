@@ -103,21 +103,29 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="Bot.cs" />
-    <Compile Include="Log.cs" />
+    <Compile Include="Helpers\Log.cs" />
+    <Compile Include="Helpers\Parser.cs" />
+    <Compile Include="Helpers\SteamAPI.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Triggers\BaseTrigger.cs" />
     <Compile Include="Triggers\ChatReplyTrigger.cs" />
+    <Compile Include="Triggers\ChooseTrigger.cs" />
+    <Compile Include="Triggers\CSGOStatTrigger.cs" />
     <Compile Include="Triggers\DoormatTrigger.cs" />
     <Compile Include="Triggers\IsUpTrigger.cs" />
     <Compile Include="Triggers\KickTrigger.cs" />
     <Compile Include="Triggers\PlayGameTrigger.cs" />
     <Compile Include="Triggers\TriggerOptions\ChatCommand.cs" />
+    <Compile Include="Triggers\TriggerOptions\ChatCommandAPI.cs" />
     <Compile Include="Triggers\TriggerOptions\ChatReply.cs" />
     <Compile Include="Triggers\TriggerOptions\DoormatOptions.cs" />
     <Compile Include="Triggers\TriggerOptions\MainOptions.cs" />
+    <Compile Include="Triggers\TriggerOptions\OptionsWindows\ChatCommandAPIWindow.xaml.cs">
+      <DependentUpon>ChatCommandAPIWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Triggers\TriggerOptions\OptionsWindows\ChatCommandWindow.xaml.cs">
       <DependentUpon>ChatCommandWindow.xaml</DependentUpon>
     </Compile>
@@ -132,7 +140,7 @@
     </Compile>
     <Compile Include="Triggers\TriggerOptions\TriggerOptionsBase.cs" />
     <Compile Include="Triggers\TriggerType.cs" />
-    <Compile Include="UserInfo.cs" />
+    <Compile Include="Helpers\UserInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">
@@ -157,6 +165,10 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Page Include="MainPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Triggers\TriggerOptions\OptionsWindows\ChatCommandAPIWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
