@@ -42,8 +42,9 @@ namespace Chaos.Helpers
                     return sr.ReadToEnd().ParseJSON<T>();
                 }
             }
-            catch(WebException)
+            catch(WebException we)
             {
+                Log.Instance.Error(we.Message + ": " + we.StackTrace);
                 return default(T);
             }
             catch(Exception err)

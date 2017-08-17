@@ -12,7 +12,7 @@
     PrimaryButtonClick="ContentDialog_PrimaryButtonClick"
     SecondaryButtonClick="ContentDialog_SecondaryButtonClick">
 
-    <Grid Margin="0,0,-149.667,0">
+    <Grid Width="417">
         <TextBox x:Name="nameBox" HorizontalAlignment="Left" Margin="0,31,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="125"/>
         <TextBox x:Name="commandBox" HorizontalAlignment="Left" Margin="130,31,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="130"/>
         <TextBox x:Name="apiBox" HorizontalAlignment="Left" Margin="265,31,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="130"/>

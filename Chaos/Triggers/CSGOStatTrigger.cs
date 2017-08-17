@@ -25,6 +25,11 @@ namespace Chaos.Triggers
             if (query != null && query.Length > 1)
             {
                 CSGOStatResponse response = await SteamAPI.Request<CSGOStatResponse>("ISteamUserStats", "GetUserStatsForGame", "v0002", "GET", Options.ChatCommandAPI.APIKey, "&steamid=" + query[1] + "&appid=730");
+                if(response == null)
+                {
+                    await SendMessageAfterDelay(toID, "There was an error retrieving stats for this user. Please check http://steamstat.us for Steam status.");
+                    return true;
+                }
                 Stat[] stats = response.playerstats.stats;
                 int totalKills = stats.Where(x => x.name == "total_kills").ElementAt(0).value;
                 int totalDeaths = stats.Where(x => x.name == "total_deaths").ElementAt(0).value;
@@ -39,18 +44,15 @@ namespace Chaos.Triggers
                 TimeSpan date = new TimeSpan(0, 0, timePlayed);
 
                 double kdRatio = (totalKills * 1.0) / totalDeaths;
-                kdRatio *= 100;
-                kdRatio /= 100;
+                kdRatio = Math.Round(kdRatio, 2);
 
                 double accuracy = (shotsHit * 1.0) / shotsFired;
                 accuracy *= 100;
-                accuracy *= 100;
-                accuracy /= 100;
+                accuracy = Math.Round(accuracy, 2);
 
                 double winRatio = (matchesWon * 1.0) / matchesTotal;
                 winRatio *= 100;
-                winRatio *= 100;
-                winRatio /= 100;
+                winRatio = Math.Round(winRatio, 2);
 
                 string name = SteamAPI.Request<SteamSummaryResult>("ISteamUser", "GetPlayerSummaries", "v0002", "GET", Options.ChatCommandAPI.APIKey, "&steamids=" + query[1]).Result.response.players[0].personaname;
                 await SendMessageAfterDelay(toID, string.Format("{0} ({1}) has {2} kills and {3} deaths ({4} kd-ratio), {5} shots fired ({6}% accuracy), {7} games played ({8}% win percentage), total playtime of {9}, {10} headshots, and {11} broken windows",

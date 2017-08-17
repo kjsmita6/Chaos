@@ -153,7 +153,7 @@ namespace Chaos
             {
                 try
                 {
-                    await FileIO.AppendTextAsync(logFile, formattedString + '\n', Windows.Storage.Streams.UnicodeEncoding.Utf8);
+                    FileIO.AppendTextAsync(logFile, formattedString + '\n', Windows.Storage.Streams.UnicodeEncoding.Utf8);
                 }
                 catch (Exception e)
                 {
@@ -204,11 +204,13 @@ namespace Chaos
                     box.Items.RemoveAt(0);
                 }
             });
+            /*
             if (level == LogLevel.Error)
             {
                 StorageFile errorFile = await errorDir.CreateFileAsync("err_" + (long)(DateTime.Now - new DateTime(1970, 1, 1)).TotalMilliseconds + ".txt");
                 await FileIO.WriteTextAsync(errorFile, line);
             }
+            */
         }
 
         // Determine the string equivalent of the LogLevel.
