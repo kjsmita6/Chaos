@@ -12,7 +12,6 @@ namespace Chaos
 {
     public class Log : IDisposable
     {
-
         private static Log instance;
         private string logFileName;
         private string botName;
@@ -38,16 +37,6 @@ namespace Chaos
             }
         }
 
-        /*
-        private Log(string logFile, string botName, LogLevel consoleLogLevel, LogLevel fileLogLevel)
-        {
-            this.logFile = logFile;
-            this.botName = botName;
-            this.consoleLogLevel = consoleLogLevel;
-            this.fileLogLevel = fileLogLevel;
-        }
-        */
-
         public static Log CreateInstance(string logFile, string botName, LogLevel consoleLogLevel, LogLevel fileLogLevel)
         {
             return instance ?? (instance = new Log(logFile, botName, consoleLogLevel, fileLogLevel));
@@ -62,7 +51,6 @@ namespace Chaos
             Warn,
             Error
         }
-
 
         protected StreamWriter _FileStream;
         protected string _botName;
@@ -101,6 +89,7 @@ namespace Chaos
             errorDir = await logDir.CreateFolderAsync("errors", CreationCollisionOption.OpenIfExists);
             logFile = await logDir.CreateFileAsync(logFileName, CreationCollisionOption.OpenIfExists);
         }
+
         // This outputs a log entry of the level info.
         public void Info(string data, params object[] formatParams)
         {
@@ -203,6 +192,7 @@ namespace Chaos
                 {
                     box.Items.RemoveAt(0);
                 }
+                box.ScrollIntoView(item);
             });
             /*
             if (level == LogLevel.Error)
