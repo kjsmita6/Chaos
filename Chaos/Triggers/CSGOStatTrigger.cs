@@ -21,7 +21,7 @@ namespace Chaos.Triggers
 
         private async Task<bool> Respond(ulong toID, ulong fromID, string message)
         {
-            string[] query = StripCommand(message, Options.ChatCommandAPI.Command);
+            string[] query = StripCommand(message, Options.ChatCommandAPI.ChatCommand.Command);
             if (query != null && query.Length > 1)
             {
                 CSGOStatResponse response = await SteamAPI.Request<CSGOStatResponse>("ISteamUserStats", "GetUserStatsForGame", "v0002", "GET", Options.ChatCommandAPI.APIKey, "&steamid=" + query[1] + "&appid=730");

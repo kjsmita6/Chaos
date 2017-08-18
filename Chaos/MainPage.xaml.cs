@@ -98,6 +98,7 @@ namespace Chaos
                 case "isUpTrigger":
                 case "playGameTrigger":
                 case "chooseTrigger":
+                case "helpTrigger":
                     {
                         ChatCommandWindow window = new ChatCommandWindow();
                         ContentDialogResult result = await window.ShowAsync();
@@ -177,21 +178,28 @@ namespace Chaos
                         ContentDialogResult result = await window.ShowAsync();
                         if(result == ContentDialogResult.Primary && window.CCAPI != null)
                         {
-                            MainOptionsWindow mow = new MainOptionsWindow();
-                            ContentDialogResult r1 = await mow.ShowAsync();
-                            if (r1 == ContentDialogResult.Primary && mow.MO != null)
+                            ChatCommandWindow ccw = new ChatCommandWindow();
+                            ContentDialogResult r2 = await ccw.ShowAsync();
+                            if (r2 == ContentDialogResult.Primary && ccw.CC != null)
                             {
-                                cca = window.CCAPI;
+                                MainOptionsWindow mow = new MainOptionsWindow();
+                                ContentDialogResult r1 = await mow.ShowAsync();
+                                if (r1 == ContentDialogResult.Primary && mow.MO != null)
+                                {
+                                    cca = window.CCAPI;
+                                    cca.ChatCommand = ccw.CC;
 
-                                type = (TriggerType)Enum.Parse(typeof(TriggerType), char.ToUpper(selected[0]) + selected.Substring(1));
-                                addedTriggersListBox.Items.Add(string.Format("{0} - {1}", cca.Name, type.ToString()));
+                                    type = (TriggerType)Enum.Parse(typeof(TriggerType), char.ToUpper(selected[0]) + selected.Substring(1));
+                                    addedTriggersListBox.Items.Add(string.Format("{0} - {1}", cca.ChatCommand.Name, type.ToString()));
 
-                                tob.ChatCommandAPI = cca;
-                                tob.Name = cca.Name;
-                                tob.Type = type;
-                                tob.MainOptions = mow.MO;
-                                BaseTrigger trigger = (BaseTrigger)Activator.CreateInstance(Type.GetType("Chaos.Triggers." + type.ToString()), type, _do.Name, tob);
-                                Bot.Triggers.Add(trigger);
+                                    tob.ChatCommandAPI = cca;
+                                    tob.ChatCommandAPI.ChatCommand = cca.ChatCommand;
+                                    tob.Name = cca.ChatCommand.Name;
+                                    tob.Type = type;
+                                    tob.MainOptions = mow.MO;
+                                    BaseTrigger trigger = (BaseTrigger)Activator.CreateInstance(Type.GetType("Chaos.Triggers." + type.ToString()), type, _do.Name, tob);
+                                    Bot.Triggers.Add(trigger);
+                                }
                             }
                         }
                     }

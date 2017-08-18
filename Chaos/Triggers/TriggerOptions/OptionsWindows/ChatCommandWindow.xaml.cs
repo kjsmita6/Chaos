@@ -43,9 +43,9 @@ namespace Chaos.Triggers.TriggerOptions.OptionsWindows
 
         private async void ContentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {
-            if (commandBox.Text == "" || nameBox.Text == "")
+            if (commandBox.Text == "" || nameBox.Text == "" || usageBox.Text == "")
             {
-                MessageDialog dialog = new MessageDialog("You must include a name and a command.", "Error");
+                MessageDialog dialog = new MessageDialog("You must include a name, a command, and command usage.", "Error");
                 await dialog.ShowAsync();
             }
             else
@@ -53,7 +53,8 @@ namespace Chaos.Triggers.TriggerOptions.OptionsWindows
                 CC = new ChatCommand()
                 {
                     Name = nameBox.Text,
-                    Command = commandBox.Text
+                    Command = commandBox.Text,
+                    Usage = usageBox.Text
                 };
             }
         }

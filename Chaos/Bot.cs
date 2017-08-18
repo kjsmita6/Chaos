@@ -135,7 +135,7 @@ namespace Chaos
 
             foreach(BaseTrigger trigger in Triggers)
             {
-                trigger.OnLoad();
+                await trigger.OnLoad();
             }
         }
     }

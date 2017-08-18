@@ -59,11 +59,11 @@ namespace Chaos.Triggers
         /// Return true if trigger loads properly
         /// </summary>
         /// <returns></returns>
-        public virtual bool OnLoad()
+        public virtual async Task<bool> OnLoad()
         {
             try
             {
-                bool ret = onLoad();
+                bool ret = await onLoad();
                 if (!ret)
                 {
                     Log.Instance.Error("{0}/{1}: Error loading trigger {2}: OnLoad returned {3}", Bot.Username, Name, Name, ret);
@@ -207,7 +207,7 @@ namespace Chaos.Triggers
         #region subclass methods
 
         // Return true if trigger was loaded properly
-        public virtual bool onLoad()
+        public virtual async Task<bool> onLoad()
         {
             return true;
         }

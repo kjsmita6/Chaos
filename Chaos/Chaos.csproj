@@ -115,6 +115,7 @@
     <Compile Include="Triggers\ChooseTrigger.cs" />
     <Compile Include="Triggers\CSGOStatTrigger.cs" />
     <Compile Include="Triggers\DoormatTrigger.cs" />
+    <Compile Include="Triggers\HelpTrigger.cs" />
     <Compile Include="Triggers\IsUpTrigger.cs" />
     <Compile Include="Triggers\KickTrigger.cs" />
     <Compile Include="Triggers\PlayGameTrigger.cs" />

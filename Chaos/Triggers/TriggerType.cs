@@ -8,6 +8,7 @@
         IsUpTrigger,
         PlayGameTrigger,
         ChooseTrigger,
-        CSGOStatTrigger
+        CSGOStatTrigger,
+        HelpTrigger
     }
 }

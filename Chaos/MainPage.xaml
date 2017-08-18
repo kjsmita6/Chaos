@@ -28,6 +28,7 @@
                         <ListBoxItem x:Name="chooseTrigger" Content="ChooseTrigger - Chooses an item from a list of items" FontSize="20"/>
                         <ListBoxItem x:Name="cSGOStatTrigger" Content="CSGOTrigger - Get selected CSGO stats from Steam API" FontSize="20"/>
                         <ListBoxItem x:Name="doormatTrigger" Content="DoormatTrigger - Greets a user with a message when they join" FontSize="20"/>
+                        <ListBoxItem x:Name="helpTrigger" Content="HelpTrigger - Display command usage for every command" FontSize="20"/>
                         <ListBoxItem x:Name="isUpTrigger" Content="IsUpTrigger - Gets the online status of a website" FontSize="20"/>
                         <ListBoxItem x:Name="kickTrigger" Content="KickTrigger - Kicks a user from chat" FontSize="20"/>
                         <ListBoxItem x:Name="playGameTrigger" Content="PlayGameTrigger - Changes the bot's game" FontSize="20"/>

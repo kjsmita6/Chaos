@@ -36,25 +36,21 @@ namespace Chaos.Triggers.TriggerOptions.OptionsWindows
             if (CCAPI == null)
             {
                 CCAPI = options;
-                nameBox.Text = CCAPI.Name;
-                commandBox.Text = CCAPI.Command;
                 apiBox.Text = CCAPI.APIKey;
             }
         }
 
         private async void ContentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {
-            if (commandBox.Text == "" || nameBox.Text == "" || apiBox.Text == "")
+            if (apiBox.Text == "")
             {
-                MessageDialog dialog = new MessageDialog("You must include a name, command, and API key.", "Error");
+                MessageDialog dialog = new MessageDialog("You must include an API key.", "Error");
                 await dialog.ShowAsync();
             }
             else
             {
                 CCAPI = new ChatCommandAPI()
                 {
-                    Name = nameBox.Text,
-                    Command = commandBox.Text,
                     APIKey = apiBox.Text
                 };
             }
