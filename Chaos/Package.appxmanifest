@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10" xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest" xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10" IgnorableNamespaces="uap mp">
   <Identity Name="63804KyleSmith.ChaosforDiscord" Publisher="CN=7ABB7670-96BA-4752-897F-EC5BAC245893" Version="1.0.0.0" />
-  <mp:PhoneIdentity PhoneProductId="f6de369e-a51e-4ffb-8252-368360a77756" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
+  <mp:PhoneIdentity PhoneProductId="5205e44f-36cb-4396-8356-6900d70dc0b0" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
   <Properties>
     <DisplayName>Chaos for Discord</DisplayName>
     <PublisherDisplayName>Kyle Smith</PublisherDisplayName>
